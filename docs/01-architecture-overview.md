@@ -3,28 +3,47 @@
 ## Project Structure
 
 ```
-tests/
-├── e2e/                    # End-to-end test specifications
-│   ├── home.spec.js
-│   ├── inventory.spec.js
-│   ├── catalog.spec.js
-│   ├── cart.spec.js
-│   └── orders.spec.js
-├── pages/                  # Page Object Model classes
-│   ├── BasePage.js
-│   ├── HomePage.js
-│   ├── InventoryPage.js
-│   ├── CatalogPage.js
-│   ├── CartPage.js
-│   ├── PaymentPage.js
-│   └── OrdersPage.js
-├── fixtures/               # Custom Playwright fixtures
-│   └── index.js
-└── mocks/                  # Test data
-    ├── catalog.js
-    ├── inventory.js
-    ├── payments.js
-    └── index.js
+final_project_tests/
+├── .github/                   # GitHub workflows and CI/CD
+├── .gitignore
+├── playwright.config.js       # Playwright configuration
+├── package.json
+├── README.md
+├── docs/                      # Project documentation
+│   ├── 01-architecture-overview.md
+│   ├── 02-page-object-model.md
+│   ├── 03-fixtures.md
+│   ├── 04-utility-methods.md
+│   └── 05-best-practices.md
+├── images/                    # Screenshots for documentation
+│   ├── debug.png
+│   ├── headed.png
+│   ├── pipeline.png
+│   ├── pipeline1.png
+│   ├── reports.png
+│   └── reports1.png
+└── tests/
+    ├── e2e/                   # Test specifications
+    │   ├── cart.spec.js       # Shopping cart tests
+    │   ├── catalog.spec.js    # Product catalog tests
+    │   ├── home.spec.js       # Home page tests
+    │   ├── inventory.spec.js  # Inventory management tests
+    │   └── orders.spec.js     # Orders page tests
+    ├── fixtures/              # Test fixtures
+    │   └── index.js           # Custom fixtures setup
+    ├── mocks/                 # Mock data
+    │   ├── catalog.js
+    │   ├── index.js
+    │   ├── inventory.js
+    │   └── payments.js
+    └── pages/                 # Page Object Models
+        ├── BasePage.js        # Base page class
+        ├── CartPage.js
+        ├── CatalogPage.js
+        ├── HomePage.js
+        ├── InventoryPage.js
+        ├── OrdersPage.js
+        └── PaymentPage.js
 ```
 
 ## Design Principles
