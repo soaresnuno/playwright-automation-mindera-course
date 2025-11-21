@@ -4,6 +4,7 @@ import { InventoryPage } from '../pages/InventoryPage.js';
 import { CatalogPage } from '../pages/CatalogPage.js';
 import { CartPage } from '../pages/CartPage.js';
 import { OrdersPage } from '../pages/OrdersPage.js';
+import { PaymentPage } from '../pages/PaymentPage.js';
 
 export const test = base.extend({
   homePage: async ({ page }, use) => {
@@ -25,6 +26,10 @@ export const test = base.extend({
   ordersPage: async ({ page }, use) => {
     const ordersPage = new OrdersPage(page);
     await use(ordersPage);
+  },
+  paymentPage: async ({ page }, use) => {
+    const paymentPage = new PaymentPage(page);
+    await use(paymentPage);
   },
 });
 

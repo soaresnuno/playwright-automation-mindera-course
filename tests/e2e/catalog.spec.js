@@ -16,8 +16,8 @@ test.describe('Catalog Page', () => {
       expect(title).toBe('Product Catalog');
     });
 
-    test('should display the catalog list', async ({ page }) => {
-      const catalogList = page.locator('[data-testid="catalog-list"]');
+    test('should display the catalog list', async ({ catalogPage }) => {
+      const catalogList = await catalogPage.getCatalogList();
       await expect(catalogList).toBeVisible();
     });
 
@@ -91,26 +91,26 @@ test.describe('Catalog Page', () => {
   });
 
   test.describe('Product Item Elements', () => {
-    test('should display item info container for each product', async ({ catalogPage, page }) => {
+    test('should display item info container for each product', async ({ catalogPage }) => {
       const count = await catalogPage.getProductCount();
       for (let i = 0; i < count; i++) {
-        const info = page.locator(`[data-testid="catalog-item-info-${i}"]`);
+        const info = await catalogPage.getItemInfo(i);
         await expect(info).toBeVisible();
       }
     });
 
-    test('should display item actions container for each product', async ({ catalogPage, page }) => {
+    test('should display item actions container for each product', async ({ catalogPage }) => {
       const count = await catalogPage.getProductCount();
       for (let i = 0; i < count; i++) {
-        const actions = page.locator(`[data-testid="catalog-item-actions-${i}"]`);
+        const actions = await catalogPage.getItemActions(i);
         await expect(actions).toBeVisible();
       }
     });
 
-    test('should display price label with euro symbol for each product', async ({ page }) => {
-      const count = await page.locator('[data-testid="catalog-list"] li').count();
+    test('should display price label with euro symbol for each product', async ({ catalogPage }) => {
+      const count = await catalogPage.getProductCount();
       for (let i = 0; i < count; i++) {
-        const priceLabel = page.locator(`[data-testid="catalog-item-price-label-${i}"]`);
+        const priceLabel = await catalogPage.getPriceLabel(i);
         await expect(priceLabel).toHaveText('Price: €');
       }
     });

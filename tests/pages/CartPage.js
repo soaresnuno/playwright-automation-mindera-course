@@ -12,9 +12,7 @@ export class CartPage extends BasePage {
   }
 
   async navigateToCart() {
-    await this.goto();
-    await this.clickTab('cart');
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.navigateToTab('cart', this.container);
   }
 
   async isLoaded() {
@@ -41,19 +39,19 @@ export class CartPage extends BasePage {
   }
 
   async getItemName(index) {
-    return this.page.locator(`[data-testid="cart-item-name-${index}"]`).textContent();
+    return this.getItemText('cart', 'name', index);
   }
 
   async getItemQuantity(index) {
-    return this.page.locator(`[data-testid="cart-item-quantity-${index}"]`).textContent();
+    return this.getItemText('cart', 'quantity', index);
   }
 
   async getItemPrice(index) {
-    return this.page.locator(`[data-testid="cart-item-price-value-${index}"]`).textContent();
+    return this.getItemText('cart', 'price-value', index);
   }
 
   async getItemTotal(index) {
-    return this.page.locator(`[data-testid="cart-item-total-value-${index}"]`).textContent();
+    return this.getItemText('cart', 'total-value', index);
   }
 
   async getCartTotal() {

@@ -31,4 +31,24 @@ export class BasePage {
   async getActiveTabContent() {
     return this.page.locator('[data-testid="store-active-tab-content"]');
   }
+
+  // Standardized navigation for child pages
+  async navigateToTab(tabName, containerLocator) {
+    await this.goto();
+    await this.clickTab(tabName);
+    await containerLocator.waitFor({ state: 'visible' });
+  }
+
+  // Reusable item locator methods
+  getItemLocator(prefix, property, index) {
+    return this.page.locator(`[data-testid="${prefix}-item-${property}-${index}"]`);
+  }
+
+  async getItemText(prefix, property, index) {
+    return this.getItemLocator(prefix, property, index).textContent();
+  }
+
+  async isItemVisible(prefix, property, index) {
+    return this.getItemLocator(prefix, property, index).isVisible();
+  }
 }

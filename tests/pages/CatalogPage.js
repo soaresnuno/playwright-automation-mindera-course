@@ -9,9 +9,7 @@ export class CatalogPage extends BasePage {
   }
 
   async navigateToCatalog() {
-    await this.goto();
-    await this.clickTab('catalog');
-    await this.container.waitFor({ state: 'visible' });
+    await this.navigateToTab('catalog', this.container);
   }
 
   async isLoaded() {
@@ -23,20 +21,24 @@ export class CatalogPage extends BasePage {
     return this.title.textContent();
   }
 
+  async getCatalogList() {
+    return this.catalogList;
+  }
+
   async getProductCount() {
     return this.catalogList.locator('li').count();
   }
 
   async getProductName(index) {
-    return this.page.locator(`[data-testid="catalog-item-name-${index}"]`).textContent();
+    return this.getItemText('catalog', 'name', index);
   }
 
   async getProductPrice(index) {
-    return this.page.locator(`[data-testid="catalog-item-price-value-${index}"]`).textContent();
+    return this.getItemText('catalog', 'price-value', index);
   }
 
   async getProductQuantity(index) {
-    const text = await this.page.locator(`[data-testid="catalog-item-quantity-${index}"]`).textContent();
+    const text = await this.getItemText('catalog', 'quantity', index);
     return text.replace(' units', '');
   }
 
@@ -50,15 +52,27 @@ export class CatalogPage extends BasePage {
   }
 
   async isAddToCartEnabled(index) {
-    const button = this.page.locator(`[data-testid="catalog-item-add-button-${index}"]`);
-    return button.isEnabled();
+    return this.getItemLocator('catalog', 'add-button', index).isEnabled();
   }
 
   async getAddToCartButtonText(index) {
-    return this.page.locator(`[data-testid="catalog-item-add-button-${index}"]`).textContent();
+    return this.getItemText('catalog', 'add-button', index);
   }
 
   async clickAddToCart(index) {
-    await this.page.click(`[data-testid="catalog-item-add-button-${index}"]`);
+    await this.getItemLocator('catalog', 'add-button', index).click();
+  }
+
+  // Additional methods for test coverage
+  async getItemInfo(index) {
+    return this.getItemLocator('catalog', 'info', index);
+  }
+
+  async getItemActions(index) {
+    return this.getItemLocator('catalog', 'actions', index);
+  }
+
+  async getPriceLabel(index) {
+    return this.getItemLocator('catalog', 'price-label', index);
   }
 }

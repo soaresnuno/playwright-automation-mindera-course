@@ -1,5 +1,14 @@
 import { test, expect } from '../fixtures/index.js';
-import { MOCK_CATALOG } from '../mocks/index.js';
+import { MOCK_CATALOG, PAYMENT_METHODS } from '../mocks/index.js';
+
+// Helper function to add item to cart and navigate to payment
+async function addToCartAndGoToPayment(catalogPage, cartPage, productIndex = 0) {
+  await catalogPage.navigateToCatalog();
+  await catalogPage.clickAddToCart(productIndex);
+  await cartPage.clickTab('cart');
+  await cartPage.isLoaded();
+  await cartPage.clickGoToPayment();
+}
 
 test.describe('Orders Page', () => {
   test.describe('Empty Orders', () => {
@@ -40,104 +49,65 @@ test.describe('Orders Page', () => {
   test.describe('Complete Purchase Flow', () => {
     const firstProduct = MOCK_CATALOG.products[0];
 
-    test('should complete purchase and display order in Orders tab', async ({ catalogPage, cartPage, ordersPage, page }) => {
-      // Add item to cart from catalog
-      await catalogPage.navigateToCatalog();
-      await catalogPage.clickAddToCart(0);
+    test('should complete purchase and display order in Orders tab', async ({ catalogPage, cartPage, ordersPage, paymentPage }) => {
+      await test.step('Add item to cart', async () => {
+        await catalogPage.navigateToCatalog();
+        await catalogPage.clickAddToCart(0);
+      });
 
-      // Go to cart and click Go to Payments
-      await cartPage.clickTab('cart');
-      await cartPage.isLoaded();
-      await cartPage.clickGoToPayment();
+      await test.step('Navigate to payment page', async () => {
+        await cartPage.clickTab('cart');
+        await cartPage.isLoaded();
+        await cartPage.clickGoToPayment();
+      });
 
-      // Verify payment page is displayed
-      const paymentPage = page.locator('[data-testid="payment-page"]');
-      await expect(paymentPage).toBeVisible();
+      await test.step('Verify payment page elements', async () => {
+        expect(await paymentPage.isLoaded()).toBe(true);
+        expect(await paymentPage.getTitle()).toBe('Payment');
+        expect(await paymentPage.isMethodsListVisible()).toBe(true);
+        expect(await paymentPage.isConfirmButtonVisible()).toBe(true);
+        expect(await paymentPage.getConfirmButtonText()).toBe('Confirm Payment');
+      });
 
-      // Verify payment title
-      const paymentTitle = page.locator('[data-testid="payment-title"]');
-      await expect(paymentTitle).toHaveText('Payment');
+      await test.step('Complete payment with MBWay', async () => {
+        await paymentPage.selectPaymentMethod('MBWay');
+        await paymentPage.confirmPayment();
+      });
 
-      // Verify payment methods list is displayed
-      const paymentMethodsList = page.locator('[data-testid="payment-methods-list"]');
-      await expect(paymentMethodsList).toBeVisible();
-
-      // Verify Confirm Payment button is displayed
-      const confirmButton = page.locator('[data-testid="payment-confirm-button"]');
-      await expect(confirmButton).toBeVisible();
-      await expect(confirmButton).toHaveText('Confirm Payment');
-
-      // Select MBWay payment method
-      const mbwayRadio = page.locator('[data-testid="payment-method-input-MBWay"]');
-      await mbwayRadio.click();
-
-      // Click Confirm Payment
-      await confirmButton.click();
-
-      // Verify redirected to Orders tab
-      await ordersPage.isLoaded();
-
-      // Verify Orders tab is active
-      const isOrdersActive = await ordersPage.isTabActive('orders');
-      expect(isOrdersActive).toBe(true);
-
-      // Verify order is displayed
-      const orderCount = await ordersPage.getOrderCount();
-      expect(orderCount).toBe(2);
-
-      // Verify order details
-      const orderPayment = await ordersPage.getOrderPaymentMethod(0);
-      expect(orderPayment).toContain('MBWay');
-
-      // Verify order item
-      const orderItemName = await ordersPage.getOrderItemName(0, 0);
-      expect(orderItemName).toContain(firstProduct.name);
-
-      // Verify order total
-      const orderTotal = await ordersPage.getOrderTotal(0);
-      expect(orderTotal).toBe(firstProduct.price);
+      await test.step('Verify order created', async () => {
+        await ordersPage.isLoaded();
+        expect(await ordersPage.isTabActive('orders')).toBe(true);
+        expect(await ordersPage.getOrderCount()).toBe(2);
+        expect(await ordersPage.getOrderPaymentMethod(0)).toContain('MBWay');
+        expect(await ordersPage.getOrderItemName(0, 0)).toContain(firstProduct.name);
+        expect(await ordersPage.getOrderTotal(0)).toBe(firstProduct.price);
+      });
     });
 
-    test('should display payment methods on payment page', async ({ catalogPage, cartPage, page }) => {
-      // Add item to cart and go to payments
-      await catalogPage.navigateToCatalog();
-      await catalogPage.clickAddToCart(0);
-      await cartPage.clickTab('cart');
-      await cartPage.isLoaded();
-      await cartPage.clickGoToPayment();
+    test('should display payment methods on payment page', async ({ catalogPage, cartPage, paymentPage }) => {
+      await test.step('Navigate to payment page', async () => {
+        await addToCartAndGoToPayment(catalogPage, cartPage);
+      });
 
-      // Verify all payment methods are displayed
-      const paymentMethods = ['MBWay', 'Klarna', 'Multibanco', 'PayPal', 'Visa'];
-
-      for (const method of paymentMethods) {
-        const methodInput = page.locator(`[data-testid="payment-method-input-${method}"]`);
-        await expect(methodInput).toBeVisible();
-
-        const methodLabel = page.locator(`[data-testid="payment-method-label-${method}"]`);
-        await expect(methodLabel).toHaveText(method);
-      }
+      await test.step('Verify all payment methods are displayed', async () => {
+        for (const method of PAYMENT_METHODS) {
+          expect(await paymentPage.isPaymentMethodVisible(method)).toBe(true);
+          expect(await paymentPage.getPaymentMethodLabel(method)).toBe(method);
+        }
+      });
     });
 
-    test('should display cart items on payment page', async ({ catalogPage, cartPage, page }) => {
-      // Add item to cart and go to payments
-      await catalogPage.navigateToCatalog();
-      await catalogPage.clickAddToCart(0);
-      await cartPage.clickTab('cart');
-      await cartPage.isLoaded();
-      await cartPage.clickGoToPayment();
+    test('should display cart items on payment page', async ({ catalogPage, cartPage, paymentPage }) => {
+      await test.step('Navigate to payment page', async () => {
+        await addToCartAndGoToPayment(catalogPage, cartPage);
+      });
 
-      // Verify cart item is displayed on payment page
-      const paymentItemName = page.locator('[data-testid="payment-item-name-0"]');
-      await expect(paymentItemName).toHaveText(firstProduct.name);
-
-      const paymentItemQuantity = page.locator('[data-testid="payment-item-quantity-0"]');
-      await expect(paymentItemQuantity).toHaveText('1');
-
-      const paymentItemPrice = page.locator('[data-testid="payment-item-price-value-0"]');
-      await expect(paymentItemPrice).toHaveText(firstProduct.price);
-
-      const paymentTotal = page.locator('[data-testid="payment-total-value"]');
-      await expect(paymentTotal).toHaveText(firstProduct.price);
+      await test.step('Verify cart item details on payment page', async () => {
+        expect(await paymentPage.getItemName(0)).toBe(firstProduct.name);
+        expect(await paymentPage.getItemQuantity(0)).toBe('1');
+        expect(await paymentPage.getItemPrice(0)).toBe(firstProduct.price);
+        expect(await paymentPage.getTotal()).toBe(firstProduct.price);
+      });
     });
   });
 });
