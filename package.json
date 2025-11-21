@@ -1,5 +1,7 @@
 {
   "name": "final_project_tests",
+  "description": "End-to-end test suite for the Store application using Playwright.",
+  "author": "Nuno Miguel Almeida Soares",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,5 +9,18 @@
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.10.1"
   },
-  "scripts": {}
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:list": "playwright test --list",
+    "test:update": "playwright test --update-snapshots",
+    "test:report": "playwright show-report",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "codegen": "playwright codegen https://playground-drab-six.vercel.app/store",
+    "browsers:install": "playwright install --with-deps"
+  }
 }

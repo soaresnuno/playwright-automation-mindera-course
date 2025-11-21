@@ -1,7 +1,22 @@
 # Final Project E2E – Test Automation with Playwright
 
-End-to-end test suite for the Store application using Playwright.
+End-to-end test suite for the [Store application](https://playground-drab-six.vercel.app/store) using Playwright.
 This project was developed as the final assignment for the **"Test Automation - WarmUp with Playwright"** course at **Mindera Code Academy**.
+
+## Table of Contents
+
+- [Documentation](#documentation)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Available Scripts](#available-scripts)
+- [Test Reports](#test-reports)
+- [Configuration](#configuration)
+- [Test Categories](#test-categories)
+- [Writing New Tests](#writing-new-tests)
+- [Additional Commands](#additional-commands)
+- [CI/CD Integration](#cicd-integration)
+- [Debug Mode and Headed](#debug-mode-and-headed)
 
 ## Documentation
 
@@ -19,30 +34,46 @@ Detailed documentation explaining the architectural choices is available in the 
 
 ```
 final_project_tests/
+├── .github/                   # GitHub workflows and CI/CD
+├── .gitignore
 ├── playwright.config.js       # Playwright configuration
 ├── package.json
-├── tests/
-│   ├── e2e/                   # Test specifications
-│   │   ├── home.spec.js       # Home page tests
-│   │   ├── inventory.spec.js  # Inventory management tests
-│   │   ├── catalog.spec.js    # Product catalog tests
-│   │   ├── cart.spec.js       # Shopping cart tests
-│   │   └── orders.spec.js     # Orders page tests
-│   ├── pages/                 # Page Object Models
-│   │   ├── BasePage.js        # Base page class
-│   │   ├── HomePage.js
-│   │   ├── InventoryPage.js
-│   │   ├── CatalogPage.js
-│   │   ├── CartPage.js
-│   │   ├── OrdersPage.js
-│   │   └── PaymentPage.js
-│   ├── fixtures/              # Test fixtures
-│   │   └── index.js           # Custom fixtures setup
-│   └── mocks/                 # Mock data
-│       ├── index.js
-│       ├── catalog.js
-│       ├── inventory.js
-│       └── payments.js
+├── README.md
+├── docs/                      # Project documentation
+│   ├── 01-architecture-overview.md
+│   ├── 02-page-object-model.md
+│   ├── 03-fixtures.md
+│   ├── 04-utility-methods.md
+│   └── 05-best-practices.md
+├── images/                    # Screenshots for documentation
+│   ├── debug.png
+│   ├── headed.png
+│   ├── pipeline.png
+│   ├── pipeline1.png
+│   ├── reports.png
+│   └── reports1.png
+└── tests/
+    ├── e2e/                   # Test specifications
+    │   ├── cart.spec.js       # Shopping cart tests
+    │   ├── catalog.spec.js    # Product catalog tests
+    │   ├── home.spec.js       # Home page tests
+    │   ├── inventory.spec.js  # Inventory management tests
+    │   └── orders.spec.js     # Orders page tests
+    ├── fixtures/              # Test fixtures
+    │   └── index.js           # Custom fixtures setup
+    ├── mocks/                 # Mock data
+    │   ├── catalog.js
+    │   ├── index.js
+    │   ├── inventory.js
+    │   └── payments.js
+    └── pages/                 # Page Object Models
+        ├── BasePage.js        # Base page class
+        ├── CartPage.js
+        ├── CatalogPage.js
+        ├── HomePage.js
+        ├── InventoryPage.js
+        ├── OrdersPage.js
+        └── PaymentPage.js
 ```
 
 ## Prerequisites
@@ -60,63 +91,43 @@ npm install
 npx playwright install
 ```
 
-## Running Tests
+## Available Scripts
 
-### Run all tests
+The project includes predefined npm scripts for common testing operations:
 
-```bash
-npx playwright test
-```
+| Script | Command | Description |
+|--------|---------|-------------|
+| `npm test` | `playwright test` | Run all tests |
+| `npm run test:ui` | `playwright test --ui` | Open interactive UI mode |
+| `npm run test:headed` | `playwright test --headed` | Run tests with visible browser |
+| `npm run test:debug` | `playwright test --debug` | Run tests in debug mode |
+| `npm run test:list` | `playwright test --list` | List all tests without running |
+| `npm run test:update` | `playwright test --update-snapshots` | Update visual snapshots |
+| `npm run test:report` | `playwright show-report` | Open HTML test report |
+| `npm run test:chromium` | `playwright test --project=chromium` | Run tests on Chromium only |
+| `npm run test:firefox` | `playwright test --project=firefox` | Run tests on Firefox only |
+| `npm run test:webkit` | `playwright test --project=webkit` | Run tests on WebKit only |
+| `npm run codegen` | `playwright codegen <url>` | Generate test code interactively |
+| `npm run browsers:install` | `playwright install --with-deps` | Install browsers with dependencies |
 
-### Run tests in UI mode
-
-```bash
-npx playwright test --ui
-```
-
-### Run tests in headed mode (see browser)
-
-```bash
-npx playwright test --headed
-```
-
-### Run specific test file
+### Running Specific Test Files
 
 ```bash
 npx playwright test tests/e2e/inventory.spec.js
 ```
 
-### Run tests on specific browser
-
-```bash
-# Chromium only
-npx playwright test --project=chromium
-
-# Firefox only
-npx playwright test --project=firefox
-
-# WebKit (Safari) only
-npx playwright test --project=webkit
-```
-
-### Run tests with debug mode
-
-```bash
-npx playwright test --debug
-```
-
 ## Test Reports
-
-### View HTML report
-
-```bash
-npx playwright show-report
-```
 
 Reports are generated automatically after test runs with:
 - Screenshots on failure
 - Video recordings on failure
 - Trace files on first retry
+
+### View HTML report
+
+```bash
+npm run test:report
+```
 
 ### Sample Reports
 
@@ -162,20 +173,20 @@ test.describe('Feature Name', () => {
 });
 ```
 
-## Useful Commands
+## Additional Commands
 
 ```bash
 # Generate new test code with codegen
-npx playwright codegen https://playground-drab-six.vercel.app/store
+npm run codegen
 
 # List all tests without running them
-npx playwright test --list
+npm run test:list
 
 # Run tests with verbose output
 npx playwright test --reporter=list
 
 # Update snapshots
-npx playwright test --update-snapshots
+npm run test:update
 ```
 
 ## CI/CD Integration
@@ -196,4 +207,14 @@ CI=true npx playwright test
 
 <p align="center">
   <img src="images/pipeline1.png" alt="Github Pipeline" width="600">
+</p>
+
+## Debug Mode and Headed
+
+<p align="center">
+  <img src="images/debug.png" alt="Debug" width="600">
+</p>
+
+<p align="center">
+  <img src="images/headed.png" alt="Headed" width="600">
 </p>
