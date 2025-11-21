@@ -19,7 +19,7 @@ export class BasePage {
   // Tab Navigation
   async clickTab(tabName) {
     await this.page.click(`[data-testid="store-tab-${tabName}"]`);
-    await this.page.waitForTimeout(300);
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async isTabActive(tabName) {
