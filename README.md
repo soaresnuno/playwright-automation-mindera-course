@@ -1,7 +1,19 @@
-# E2E Test Suite - Playwright
+# Final Project E2E – Test Automation with Playwright
 
 End-to-end test suite for the Store application using Playwright.
 This project was developed as the final assignment for the **"Test Automation - WarmUp with Playwright"** course at **Mindera Code Academy**.
+
+## Documentation
+
+Detailed documentation explaining the architectural choices is available in the `docs/` folder:
+
+| Document | Description |
+|----------|-------------|
+| [01-architecture-overview.md](docs/01-architecture-overview.md) | Project structure and design principles |
+| [02-page-object-model.md](docs/02-page-object-model.md) | POM pattern, BasePage, selector strategy |
+| [03-fixtures.md](docs/03-fixtures.md) | Custom fixtures and dependency injection |
+| [04-utility-methods.md](docs/04-utility-methods.md) | Utility methods and mock data strategy |
+| [05-best-practices.md](docs/05-best-practices.md) | Testing guidelines and configuration |
 
 ## Project Structure
 
@@ -177,3 +189,11 @@ The test suite is configured for CI environments:
 # Run in CI mode
 CI=true npx playwright test
 ```
+
+<p align="center">
+  <img src="images/pipeline.png" alt="Github Pipeline" width="600">
+</p>
+
+<p align="center">
+  <img src="images/pipeline1.png" alt="Github Pipeline" width="600">
+</p>
